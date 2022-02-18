@@ -32,7 +32,7 @@ namespace SignalRChatServerExample.Hubs
                 await Clients.Others.SendAsync("receiveMessage", message, senderClient.NickName);
             }
             else
-            {
+            {   
                 Client client = ClientSource.Clients.FirstOrDefault(c => c.NickName == clientName);
                 await Clients.Client(client.ConnectionId).SendAsync("receiveMessage", message, senderClient.NickName);
             }
