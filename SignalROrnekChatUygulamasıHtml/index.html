@@ -76,6 +76,22 @@
                 _message.find("h5")[1].innerHTML = "Sen";
                 $(".messages").append(_message);
             });
+            $("#btnOdaOlustur").click(() => {
+                connection.invoke("AddGroup", $("#txtOdaAdi").val());
+            });
+
+
+            connection.on("groups", groups => {
+                console.log(groups);
+
+                let options = "";
+                $.each(groups, (index, item) => {
+                    options += `<option value="${item.groupName}"> ${item.groupName} </option>`;
+                });
+                $(".rooms").append(options);
+
+
+            });
         });
 
     </script>
@@ -91,10 +107,14 @@
                 <!-- Sol Menü -->
                 <div class="col-md-3">
                     <!-- Oda -->
-                    <input class="form-control form-control-lg disabled" type="text" placeholder="Oda adı">
-                    <button type="button" class="btn btn-info rightButton disabled">Oda Oluştur</button>
-                    <select size="5" style="width: 100%;" class="form-select disabled" multiple>
-                        <option selected value="1">Odalar</option>
+                    <input class="form-control form-control-lg disabled" type="text" placeholder="Oda adı"
+                        id="txtOdaAdi">
+
+                    <button type="button" class="btn btn-info rightButton disabled" id="btnOdaOlustur">Oda
+                        Oluştur</button>
+
+                    <select size="5" style="width: 100%;" class="form-select disabled rooms" multiple>
+                        <option selected value="-1">Odalar</option>
                     </select>
                     <button type="button" class="btn btn-primary rightButton disabled">Seçili Odalara Gir</button>
                     <!-- Oda -->

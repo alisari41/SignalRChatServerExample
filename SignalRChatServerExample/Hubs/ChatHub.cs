@@ -32,10 +32,20 @@ namespace SignalRChatServerExample.Hubs
                 await Clients.Others.SendAsync("receiveMessage", message, senderClient.NickName);
             }
             else
-            {   
+            {
                 Client client = ClientSource.Clients.FirstOrDefault(c => c.NickName == clientName);
                 await Clients.Client(client.ConnectionId).SendAsync("receiveMessage", message, senderClient.NickName);
             }
+
+        }
+
+        public async Task AddGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName); //Grubu oluşturan client gruba eklensin
+            GroupSource.Groups.Add(new Group{GroupName = groupName});
+
+            await Clients.All.SendAsync("groups", GroupSource.Groups);
+
 
         }
     }
