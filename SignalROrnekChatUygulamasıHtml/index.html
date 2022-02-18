@@ -51,6 +51,23 @@
                     $("#_clients").append(user);
                 });
             });
+
+
+            connection.on("receiveMessage", message => {
+                //Mesajları göster
+                const _message = $(".message").clone();
+                _message.removeClass("message");
+                _message.find("p").html(message);
+                $(".messages").append(_message);
+            });
+
+
+            $("#btnGonder").click(() => {
+                //Hangi client'a mesaj göndermek istiyorsak
+                const clientName = $(".users.active").first().html();
+                const message = $("#txtMesaj").val();
+                connection.invoke("SendMessageAsync", message, clientName);
+            });
         });
 
     </script>
@@ -93,19 +110,19 @@
 
                             </div>
                             <textarea class="form-control" style="margin-top: 5px;"
-                                placeholder="İletilecek mesajı buraya giriniz." rows="3"></textarea>
+                                placeholder="İletilecek mesajı buraya giriniz." rows="3" id="txtMesaj"></textarea>
+
                             <button type="button" class="btn btn-light rightButton" id="btnGonder">Gönder</button>
+
                             <br><br><br>
-                            <div class="list-group">
-                                <a class="list-group-item list-group-item-action" aria-current="true">
+
+                            <div class="list-group messages">
+                                <a class="list-group-item list-group-item-action message" aria-current="true">
                                     <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">Ahmet</h5>
-                                        <h5 class="mb-2">Sen</h5>
+                                        <h5 class="mb-1"></h5>
+                                        <h5 class="mb-2"></h5>
                                     </div>
-                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maeceneas sed diam
-                                        ege
-                                        risus varius bşandit,</p>
-                                    <small>Donec id elit non mi porta.</small>
+                                    <p class="mb-1"></p>
                                 </a>
                             </div>
                         </div>
