@@ -1,0 +1,95 @@
+<html>
+
+<head>
+    <script src="scripts/signalr.min.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+
+
+    <script>
+        $(document).ready(() => {
+            $(".disabled").attr("disabled", "disabled");
+            $(".users").click(function () {
+                $(".users").each((index, item) => {
+                    item.classList.remove("active");
+                });
+                $(this).addClass("active");
+            });
+            $("#btnGonder").click(() => {
+                var x = $(".message").clone();
+                x.removeClass("message");
+                x.find("h5")[1].innerHTML = "";//Ahmeti gösterir
+                x.find("h5")[0].innerHTML = "";//Seni gösterir
+                $(".message").append(x);
+            });
+        });
+
+    </script>
+
+
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                <!-- Sol Menü -->
+                <div class="col-md-3">
+                    <!-- Oda -->
+                    <input class="form-control form-control-lg disabled" type="text" placeholder="Oda adı">
+                    <button type="button" class="btn btn-info rightButton disabled">Oda Oluştur</button>
+                    <select size="5" style="width: 100%;" class="form-select disabled" multiple>
+                        <option selected value="1">Odalar</option>
+                    </select>
+                    <button type="button" class="btn btn-primary rightButton disabled">Seçili Odalara Gir</button>
+                    <!-- Oda -->
+                    <br><br><br>
+                    <!-- Clientlar -->
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action users active">
+                            Tümü
+                        </a>
+                        <a class="list-group-item list-group-item-action users" aria-current="true">
+                            Crass justo odio
+                        </a>
+                    </div>
+                    <!-- Clientlar -->
+                </div>
+                <div class="col-md-9">
+                    <!-- Mesajlaşma -->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <textarea class="form-control" style="margin-top: 5px;"
+                                placeholder="İletilecek mesajı buraya giriniz." rows="3"></textarea>
+                            <button type="button" class="btn btn-light rightButton" id="btnGonder">Gönder</button>
+                            <br><br><br>
+                            <div class="list-group">
+                                <a class="list-group-item list-group-item-action" aria-current="true">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Ahmet</h5>
+                                        <h5 class="mb-2">Sen</h5>
+                                    </div>
+                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maeceneas sed diam
+                                        ege
+                                        risus varius bşandit,</p>
+                                    <small>Donec id elit non mi porta.</small>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Mesajlaşma -->
+                        <div class="col-md-3">
+                            <input class="form-control form-control-lg" type="text" placeholder="Adınız/Nick" id="txtNickName">
+                            <button type="button" class="btn btn-success leftButton" id="btnGirisYap">Giriş Yap</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
