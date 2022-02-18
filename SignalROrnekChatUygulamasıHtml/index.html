@@ -11,19 +11,45 @@
 
     <script>
         $(document).ready(() => {
+            //ilgili hub'a bağlanmak için
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:5001/chathub")
+                .build();
+
+            connection.start();
+
             $(".disabled").attr("disabled", "disabled");
-            $(".users").click(function () {
+
+            $("body").on("click", ".users", function () {
                 $(".users").each((index, item) => {
                     item.classList.remove("active");
                 });
                 $(this).addClass("active");
             });
-            $("#btnGonder").click(() => {
-                var x = $(".message").clone();
-                x.removeClass("message");
-                x.find("h5")[1].innerHTML = "";//Ahmeti gösterir
-                x.find("h5")[0].innerHTML = "";//Seni gösterir
-                $(".message").append(x);
+
+
+            $("#btnGirisYap").click(() => {
+                const nickName = $("#txtNickName").val();
+                connection.invoke("GetNickName", nickName).catch(error => console.log(error));//İlgili Metot adını tetikliyorum                
+                $(".disabled").removeAttr("disabled");//Eğer giriş yapıldıysa disable olan nesnelerin disable özelliğini kaldırıyo
+            });
+            connection.on("clientJoined", nickName => {//Yeni kullanıcı giriş yaptığında
+                $("#clientDurumMsajlari").html(` ${nickName} giriş yaptı.`);
+                $("#clientDurumMsajlari").fadeIn(2000, () => {
+                    setTimeout(() => {
+                        $("#clientDurumMsajlari").fadeOut(2000);
+                    }, 2000);
+                });
+
+            });
+            connection.on("clients", clients => {
+                $("#_clients").html("");//client listesini temizliyorum iki kere yazmaması için
+                $.each(clients, (index, item) => {
+                    const user = $(".users").first().clone();
+                    user.removeClass("active");
+                    user.html(item.nickName);
+                    $("#_clients").append(user);
+                });
             });
         });
 
@@ -49,13 +75,13 @@
                     <!-- Oda -->
                     <br><br><br>
                     <!-- Clientlar -->
-                    <div class="list-group">
+                    <div class="list-group clients">
                         <a class="list-group-item list-group-item-action users active">
                             Tümü
                         </a>
-                        <a class="list-group-item list-group-item-action users" aria-current="true">
-                            Crass justo odio
-                        </a>
+                        <div id="_clients">
+
+                        </div>
                     </div>
                     <!-- Clientlar -->
                 </div>
@@ -63,6 +89,9 @@
                     <!-- Mesajlaşma -->
                     <div class="row">
                         <div class="col-md-9">
+                            <div class="alert alert-success" id="clientDurumMsajlari" style="display: none;">
+
+                            </div>
                             <textarea class="form-control" style="margin-top: 5px;"
                                 placeholder="İletilecek mesajı buraya giriniz." rows="3"></textarea>
                             <button type="button" class="btn btn-light rightButton" id="btnGonder">Gönder</button>
@@ -82,7 +111,8 @@
                         </div>
                         <!-- Mesajlaşma -->
                         <div class="col-md-3">
-                            <input class="form-control form-control-lg" type="text" placeholder="Adınız/Nick" id="txtNickName">
+                            <input class="form-control form-control-lg" type="text" placeholder="Adınız/Nick"
+                                id="txtNickName">
                             <button type="button" class="btn btn-success leftButton" id="btnGirisYap">Giriş Yap</button>
                         </div>
                     </div>
