@@ -53,11 +53,12 @@
             });
 
 
-            connection.on("receiveMessage", message => {
+            connection.on("receiveMessage", (message, nickName) => {
                 //Mesajları göster
                 const _message = $(".message").clone();
                 _message.removeClass("message");
                 _message.find("p").html(message);
+                _message.find("h5")[0].innerHTML = nickName;
                 $(".messages").append(_message);
             });
 
