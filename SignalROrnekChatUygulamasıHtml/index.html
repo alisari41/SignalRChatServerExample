@@ -76,6 +76,7 @@
                 _message.find("h5")[1].innerHTML = "Sen";
                 $(".messages").append(_message);
             });
+
             $("#btnOdaOlustur").click(() => {
                 connection.invoke("AddGroup", $("#txtOdaAdi").val());
             });
@@ -83,14 +84,30 @@
 
             connection.on("groups", groups => {
                 console.log(groups);
-
+                //Oda isimlerini listele
                 let options = "";
                 $.each(groups, (index, item) => {
                     options += `<option value="${item.groupName}"> ${item.groupName} </option>`;
                 });
                 $(".rooms").append(options);
+            });
 
 
+            $("#btnOdalaraGir").click(() => {
+                let groupNames = [];//dizi olarak almak istiyorum
+                $(".rooms option:selected").map((i, e) => {
+                    groupNames.push(e.innerHTML);
+                });
+                connection.invoke("AddClientToGroup", groupNames);//tüm secili odalara kayıt ol ve metotu ivoke ile tetikle
+            });
+
+            
+
+
+            $(".rooms").change(function () {
+                let groupName = $(this).val();//seçilen odanın
+                console.log(groupName[0]);
+                connection.invoke("GetClientToGroup", groupName[0]);//index 0 vermek zorundayım moetot olarak string kullandım index vermezsem array dönüyor hata verir
             });
         });
 
@@ -116,7 +133,10 @@
                     <select size="5" style="width: 100%;" class="form-select disabled rooms" multiple>
                         <option selected value="-1">Odalar</option>
                     </select>
-                    <button type="button" class="btn btn-primary rightButton disabled">Seçili Odalara Gir</button>
+
+                    <button type="button" class="btn btn-primary rightButton disabled" id="btnOdalaraGir">Seçili Odalara
+                        Gir</button>
+
                     <!-- Oda -->
                     <br><br><br>
                     <!-- Clientlar -->
