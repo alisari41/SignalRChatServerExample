@@ -57,7 +57,8 @@ namespace SignalRChatServerExample.Hubs
             Client client = ClientSource.Clients.FirstOrDefault(c => c.ConnectionId == Context.ConnectionId);
             foreach (var group in groupNames)
             {
-                Group _group = GroupSource.Groups.FirstOrDefault(x => x.GroupName == group);
+                
+                Group _group = GroupSource.Groups.FirstOrDefault(x => x.GroupName == group.Trim());
 
 
                 var result = _group.Clients.Any(c => c.ConnectionId == Context.ConnectionId);
@@ -71,8 +72,21 @@ namespace SignalRChatServerExample.Hubs
 
         public async Task GetClientToGroup(string groupName)
         {
+            //if (groupName == "-1")
+            //{//Eğer groupname Tümü(odalar) seçiliyse hepsini listele
+            //    await Clients.Caller.SendAsync("clients", ClientSource.Clients);
+            //}
+
             Group group = GroupSource.Groups.FirstOrDefault(g => g.GroupName == groupName);
-            await Clients.Caller.SendAsync("clients", group.Clients);
+            //Eğer"?"  groupname Tümü(odalar) seçiliyse hepsini listele değilse":" seçilen odayi listele
+            await Clients.Caller.SendAsync("clients", groupName == "-1" ? ClientSource.Clients : group.Clients);
+        }
+
+
+        public async Task SendMessageToGroupAsync(string groupName, string message)
+        {
+            await Clients.Group(groupName).SendAsync("receiveMessage", message,
+                ClientSource.Clients.FirstOrDefault(c => c.ConnectionId == Context.ConnectionId).NickName);
         }
     }
 }

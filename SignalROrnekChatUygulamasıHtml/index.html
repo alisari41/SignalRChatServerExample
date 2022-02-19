@@ -76,6 +76,21 @@
                 _message.find("h5")[1].innerHTML = "Sen";
                 $(".messages").append(_message);
             });
+            // Gruba mesaj gönder
+            let _groupName = "";
+            $("#btnGrubaGonder").click(() => {
+                const message = $("#txtMesaj").val();
+                if (_groupName != "")//_groupName eğerki boş değilse
+                {
+                    connection.invoke("SendMessageToGroupAsync", _groupName, message);
+                    //Kullanıcının kendi gönderdiğim mesajların başlığına sen yazıp mesajı gösterme işlemi
+                    const _message = $(".message").clone();
+                    _message.removeClass("message");
+                    _message.find("p").html(message);
+                    _message.find("h5")[1].innerHTML = "Sen";
+                    $(".messages").append(_message);
+                }
+            });
 
             $("#btnOdaOlustur").click(() => {
                 connection.invoke("AddGroup", $("#txtOdaAdi").val());
@@ -83,11 +98,11 @@
 
 
             connection.on("groups", groups => {
-                console.log(groups);
+                $(".rooms").html("");//Eklenen odalar kendini tekrarlamasın
                 //Oda isimlerini listele
-                let options = "";
+                let options = `<option selected value="-1">Odalar</option>`;
                 $.each(groups, (index, item) => {
-                    options += `<option value="${item.groupName}"> ${item.groupName} </option>`;
+                    options += `<option value="${item.groupName}">${item.groupName}</option>`;
                 });
                 $(".rooms").append(options);
             });
@@ -101,11 +116,12 @@
                 connection.invoke("AddClientToGroup", groupNames);//tüm secili odalara kayıt ol ve metotu ivoke ile tetikle
             });
 
-            
+
 
 
             $(".rooms").change(function () {
                 let groupName = $(this).val();//seçilen odanın
+                _groupName = groupName[0];
                 console.log(groupName[0]);
                 connection.invoke("GetClientToGroup", groupName[0]);//index 0 vermek zorundayım moetot olarak string kullandım index vermezsem array dönüyor hata verir
             });
@@ -134,8 +150,9 @@
                         <option selected value="-1">Odalar</option>
                     </select>
 
-                    <button type="button" class="btn btn-primary rightButton disabled" id="btnOdalaraGir">Seçili Odalara
-                        Gir</button>
+                    <button type="button" class="btn btn-primary rightButton disabled" id="btnOdalaraGir">
+                        Seçili Odalara Gir
+                    </button>
 
                     <!-- Oda -->
                     <br><br><br>
@@ -161,6 +178,9 @@
                                 placeholder="İletilecek mesajı buraya giriniz." rows="3" id="txtMesaj"></textarea>
 
                             <button type="button" class="btn btn-light rightButton" id="btnGonder">Gönder</button>
+
+                            <button type="button" class="btn btn-light rightButton" id="btnGrubaGonder">Gruba
+                                Gönder</button>
 
                             <br><br><br>
 
